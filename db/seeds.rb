@@ -11,6 +11,7 @@
     body: RandomData.random_paragraph
   )
 end
+
 posts = Post.all
 
 100.times do
@@ -21,6 +22,17 @@ posts = Post.all
   )
 end
 
-puts "Seed finished"
-puts"#{Post.count} posts created"
+puts "#{Post.count} posts created"
+uniq_post = Post.find_or_create_by(
+    title: "Real Cool Stuff",
+    body: "There's a starman waiting in the sky, he'd like to come and meet us but he thinks he'd blow our minds"
+    )
+puts "#{Post.count} posts created"
 puts "#{Comment.count} comments created"
+
+uniq_comment = Comment.find_or_create_by(
+  post: uniq_post,
+  body: "What a cool thing to say!"
+)
+puts "#{Comment.count} comments created"
+puts "Seed finished"

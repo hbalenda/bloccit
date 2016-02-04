@@ -16,7 +16,6 @@ class PostsController < ApplicationController
     @post = Post.new
     @post.title = params[:post][:title]
     @post.body = params[:post][:body]
-
     #if post is successfully saved, display success message
     if @post.save
       flash[:notice] = "Post was saved."

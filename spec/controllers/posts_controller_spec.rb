@@ -12,7 +12,6 @@ RSpec.describe PostsController, type: :controller do
 
     it "assigns [my_post] to @posts" do
       get :index
-
       expect(assigns(:posts)).to eq([my_post])
     end
   end
@@ -112,7 +111,7 @@ RSpec.describe PostsController, type: :controller do
     it "deletes the post" do
       delete :destroy, {id: my_post.id}
 
-      count = Post.where({id: my_post.id})
+      count = Post.where({id: my_post.id}).size
       expect(count).to eq 0
     end
 
@@ -121,5 +120,5 @@ RSpec.describe PostsController, type: :controller do
       expect(response).to redirect_to posts_path
     end
   end
-  
+
 end

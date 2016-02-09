@@ -4,7 +4,7 @@ class PostsController < ApplicationController
   end
 
   def new
-    @topic = Topic.find(params[:id])
+    @topic = Topic.find(params[:topic_id])
     @post = Post.new
   end
 
@@ -13,13 +13,13 @@ class PostsController < ApplicationController
     @post = Post.new
     @post.title = params[:post][:title]
     @post.body = params[:post][:body]
-    @topic = Topic.find(params[:id])
-    @post.topic = @topic
+    topic = Topic.find(params[:topic_id])
+    @post.topic = topic
 
     #if post is successfully saved, display success message
     if @post.save
       flash[:notice] = "Post was saved."
-      redirect_to [@topic, @post]
+      redirect_to [topic, @post]
     else
       #if save is unsuccessful, display error message and render the new view again
       flash.now[:alert] = "There was an error saving the post. Please try again."
@@ -38,7 +38,7 @@ class PostsController < ApplicationController
 
     if @post.save
       flash[:notice] = "Post was updated"
-      redirect_to [@topic, @post]
+      redirect_to [@post.topic, @post]
     else
       flash.now[:alert] = "There was an error updating. Please try again."
       render :edit

@@ -7,8 +7,8 @@ it { is_expected.to validate_presence_of(:name) }
 it { is_expected.to validate_length_of(:name).is_at_least(1) }
 #shoulda tests for email
 it { is_expected.to validate_presence_of(:email) }
-it { is_expected.to validate_length_of(:email).is_at_least(3) }
 it { is_expected.to validate_uniqueness_of(:email) }
+it { is_expected.to validate_length_of(:email).is_at_least(3) }
 it { is_expected.to allow_value("user@bloccit.com").for(:email) }
 it { should_not allow_value("userbloccit.com").for(:email) }
 #shoulda tests for password
@@ -22,6 +22,12 @@ describe "attributes" do
   end
   it "should respond to email" do
     expect(user).to respond_to(:email)
+  end
+
+  it "should format the user's name properly" do
+    user.name = "bloc user"
+    user.save
+    expect(user.name).to eq("Bloc User")
   end
 end
 

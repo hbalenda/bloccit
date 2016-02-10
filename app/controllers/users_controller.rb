@@ -18,4 +18,7 @@ class UsersController < ApplicationController
       render :new
     end
   end
+
+  def confirm
+  end
 end

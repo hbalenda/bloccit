@@ -25,7 +25,7 @@ class User < ActiveRecord::Base
     if name
       new = []
       name.split.each {|x| new << x.capitalize }
-    end
       new.join(" ")
+    end
   end
 end

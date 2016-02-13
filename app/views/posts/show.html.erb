@@ -1,5 +1,7 @@
-<h1><%= @post.title %></h1>
-
+<h1><%= @post.title %></h1><br>
+  <small>
+    submitted <%= time_ago_in_words(@post.created_at) %> ago by <%= @post.user.name %>
+  </small>
 <div class="row">
   <div class="col-md-8">
     <p><%= @post.body %></p>

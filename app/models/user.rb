@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  has_many :posts
   before_save { self.email = email.downcase }
 #sets up accepted characters and format for email
   EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i

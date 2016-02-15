@@ -1,6 +1,10 @@
 class User < ActiveRecord::Base
   has_many :posts
+
   before_save { self.email = email.downcase }
+#sets default role to member
+  before_save { self.role ||= :member }
+
 #sets up accepted characters and format for email
   EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
@@ -19,4 +23,5 @@ class User < ActiveRecord::Base
 #contains methods to set and authenticate against a BCrypt password
 #requires password_digest attribute which is set in User model
   has_secure_password
+  enum role: [:member, :admin]
 end

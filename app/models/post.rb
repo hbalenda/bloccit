@@ -5,6 +5,7 @@ class Post < ActiveRecord::Base
   has_many :labelings, as: :labelable
   has_many :labels, through: :labelings
   has_many :votes, dependent: :destroy
+  after_create :create_vote
 
   default_scope { order('rank DESC') }
 
@@ -29,5 +30,11 @@ class Post < ActiveRecord::Base
     age_in_days = (created_at - Time.new(1970,1,1)) / 1.day.seconds
     new_rank = points + age_in_days
     update_attribute(:rank, new_rank)
+  end
+
+  private
+
+  def create_vote
+    user.votes.create(post: self, value: 1)
   end
 end

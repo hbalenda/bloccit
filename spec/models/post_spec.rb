@@ -30,7 +30,6 @@ it { is_expected.to have_many(:votes) }
     it "responds to body" do
       expect(post).to respond_to(:body)
     end
-
   end
 
   describe "voting" do
@@ -44,6 +43,11 @@ it { is_expected.to have_many(:votes) }
     describe "#up_votes" do
       it "counts the number of votes with value = 1" do
         expect(post.up_votes).to eq(@up_votes)
+      end
+
+      it "automatically up_votes when a post is created" do
+        post = Post.create!(topic: topic, title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user)
+        expect(post.up_votes).to eq 1
       end
     end
 

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Post, type: :model do
-  #creates new instance of post class for test, names it post.
+
 let(:topic) { Topic.create!(name: RandomData.random_sentence, description: RandomData.random_paragraph)}
 let(:user) { User.create!(name: "Bloccit User", email: "user@bloccit.com", password: "helloworld") }
 let(:post) { topic.posts.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user)}
@@ -56,6 +56,25 @@ it { is_expected.to have_many(:votes) }
     describe "points" do
       it "returns the sum of all up and down votes" do
         expect(post.points).to eq(@up_votes - @down_votes)
+      end
+    end
+
+    describe "#update_rank" do
+      it "calculates the correct rank" do
+        post.update_rank
+        expect(post.rank).to eq (post.points + (post.created_at - Time.new(1970,1,1)) / 1.day.seconds)
+      end
+
+      it "updates the rank when an up vote is created" do
+        old_rank = post.rank
+        post.votes.create!(value: 1)
+        expect(post.rank).to eq (old_rank + 1)
+      end
+
+      it "updates rank when a down vote is created" do
+        old_rank = post.rank
+        post.votes.create!(value: -1)
+        expect(post.rank).to eq (old_rank - 1)
       end
     end
   end

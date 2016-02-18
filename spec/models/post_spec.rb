@@ -5,6 +5,8 @@ RSpec.describe Post, type: :model do
 let(:topic) { Topic.create!(name: RandomData.random_sentence, description: RandomData.random_paragraph)}
 let(:user) { User.create!(name: "Bloccit User", email: "user@bloccit.com", password: "helloworld") }
 let(:post) { topic.posts.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user)}
+let(:second_post) { Post.new(title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user, topic: topic)}
+
 
 it { is_expected.to have_many(:labelings) }
 it { is_expected.to have_many(:labels).through(:labelings) }
@@ -79,4 +81,12 @@ it { is_expected.to have_many(:favorites) }
       end
     end
   end
+
+  describe "after_create" do
+    it "sends email to owner of post" do
+      expect(FavoriteMailer).to receive(:new_post).with(:second_post).and_return(double(deliver_now: true))
+      second_post.save
+    end
+  end
+
 end

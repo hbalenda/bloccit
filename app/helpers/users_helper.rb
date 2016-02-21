@@ -1,6 +1,10 @@
 module UsersHelper
-  def user_posts_or_comments?(user)
-    user.comments.any? || user.posts.any?
+  def user_has_posts?(user)
+    user.posts.any?
+  end
+
+  def user_has_comments?(user)
+    user.comments.any?
   end
 
   def user_has_favorites?(user)

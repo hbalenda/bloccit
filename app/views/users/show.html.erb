@@ -18,14 +18,22 @@
     </div>
   </div>
 </div>
-<% if user_posts_or_comments?(@user) %>
+<% if @user.has_posts? %>
   <h2> Posts</h2>
   <%= render @user.posts %>
+<% elsif @user.has_comments? %>
   <h2>Comments</h2>
   <%= render @user.comments %>
 <% else %>
   <p><%="#{@user.name} has not submitted any posts yet." %></p>
 <% end %>
-<% if user_has_favorites?(@user) %>
-<% @favorites.each { |post| post.title } %>
+<% if @user.has_favorites? %>
+<h2>Favorites</h2>
+    <% @user.favorites.each do |favorite| %>
+      <%= render partial: 'users/favorite', locals: { post: favorite.post } %>
+    <% end %>
+<% else %>
+    <div class="media">
+      <%= link_to current_user.name, user_path(current_user) %> has not favorited any posts yet.
+    </div>
 <% end %>

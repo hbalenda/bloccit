@@ -13,6 +13,17 @@ RSpec.describe Api::V1::UsersController, type: :controller do
       get :show, id: my_user.id
       expect(response).to have_http_status(401)
     end
+
+    it "PUT update returns http unauthenticated" do
+      new_user = build(:user)
+      put :update, id: my_user.id, user: {name: new_user.name, email: new_user.email, password: new_user.password }
+      expect(response).to have_http_status(401)
+    end
+
+    it "POST create returns http unauthenticated" do
+      new_user = build(:user)
+      post :create, user: {name: new_user.name, email: new_user.email, password: new_user.password }
+      expect(response).to have_http_status(401)
   end
 
 #my_user has auth token but is member
@@ -29,6 +40,19 @@ RSpec.describe Api::V1::UsersController, type: :controller do
     it "GET show returns http forbidden" do
       get :show, id: my_user.id
       expect(response).to have_http_status(403)
+    end
+
+    it "PUT update returns http forbidden" do
+      new_user = build(:user)
+      put :update, id: my_user.id, user: { name: new_user.name, email: new_user.email, password: new_user.password }
+      expect(response).to have_http_status(403)
+    end
+
+    it "POST create returns http forbidden" do
+      new_user = build(:user)
+      post :create, user: { name: new_user.name, email: new_user.email, password: new_user.password }
+      expect(response).to have_http_status(403)
+      end
     end
   end
 
@@ -70,5 +94,43 @@ RSpec.describe Api::V1::UsersController, type: :controller do
         expect(response.body).to eq(my_user.to_json)
       end
     end
-  end
-end
+
+        describe "PUT update" do
+          context "with valid attributes" do
+            before do
+              @new_user = build(:user)
+              put :update, id: my_user.id, user: { name: @new_user.name, email: @new_user.email, password: @new_user.password, role: "admin" }
+            end
+
+            it "returns http success" do
+              expect(response).to have_http_status(:success)
+            end
+
+            it "returns json content type" do
+              expect(response.content_type).to eq 'application/json'
+            end
+
+            it "updates a user with the correct attributes" do
+              hashed_json = JSON.parse(response.body)
+              expect(hashed_json["name"]).to eq(@new_user.name)
+              expect(hashed_json["email"]).to eq(@new_user.email)
+              expect(hashed_json["role"]).to eq("admin")
+            end
+          end
+
+          context "with invalid attributes" do
+            before do
+              put :update, id: my_user.id, user: { name: "", email: "bademail@", password: "short" }
+            end
+
+            it "returns http error" do
+              expect(response).to have_http_status(400)
+            end
+
+            it "returns the correct json error message" do
+              expect(response.body).to eq({"error" => "User update failed","status" => 400}.to_json)
+            end
+          end
+        end
+      end
+    end

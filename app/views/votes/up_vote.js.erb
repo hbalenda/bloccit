@@ -1,1 +1,2 @@
 $('.js-voter').replaceWith("<%= escape_javascript(render partial: 'votes/voter', locals: { post: @post}) %>");
+$('#post-<%= @post.id %>-vote').html("<strong><%= @post.points %></strong>");

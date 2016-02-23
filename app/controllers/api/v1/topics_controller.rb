@@ -4,19 +4,18 @@ class Api::V1::TopicsController < Api::V1::BaseController
 
   def index
     topics = Topic.all
-    render json: topics.to_json, status: 200
+    render json: topics.to_json(include: :posts), status: 200
   end
 
   def show
     topic = Topic.find(params[:id])
-    render json: topic.to_json, status: 200
+    render json: topic.to_json(include: :posts), status: 200
   end
 
   def create
     topic = Topic.new(topic_params)
 
-    if topic.valid?
-      topic.save!
+    if topic.save
       render json: topic.to_json, status: 201
     else
       render json: {error: "Topic is invalid", status: 400}, status: 400
@@ -43,10 +42,9 @@ class Api::V1::TopicsController < Api::V1::BaseController
 
   def create_post
     topic = Topic.find(params[:id])
-    post = topic.post.new(post_params)
+    post = topic.posts.build(post_params)
 
-    if post.valid?
-      post.save!
+    if post.save
       render json: post.to_json, status: 201
     else
       render json: {error: "Post is invalid", status: 400}, status: 400

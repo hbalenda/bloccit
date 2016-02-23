@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Api::V1::TopicsController, type: :controller do
   let(:my_user) { create(:user) }
   let(:my_topic) { create(:topic) }
-  let(:my_post) { create(:post, topic: my_topic) }
+  let(:my_post) { create(:post, topic: my_topic, user: my_user) }
 
   context "unauthenticated user" do
     it "GET index returns http success" do
@@ -28,11 +28,6 @@ RSpec.describe Api::V1::TopicsController, type: :controller do
 
     it "DELETE destroy returns http unauthenticated" do
       delete :destroy, id: my_topic.id
-      expect(response).to have_http_status(401)
-    end
-
-    it "POST create_post returns http unauthenticated" do
-      post :create_post, topic_id: my_topic.id, post: {title: "New Title", body: "New Body"}
       expect(response).to have_http_status(401)
     end
   end
@@ -64,11 +59,6 @@ RSpec.describe Api::V1::TopicsController, type: :controller do
 
     it "DELETE destroy returns http forbidden" do
       delete :destroy, id: my_topic.id
-      expect(response).to have_http_status(403)
-    end
-
-    it "POST create_post returns http forbidden" do
-      post :create_post, topic_id: my_topic.id, post: {title: "New Title", body: "New Body"}
       expect(response).to have_http_status(403)
     end
   end
@@ -138,7 +128,7 @@ RSpec.describe Api::V1::TopicsController, type: :controller do
     describe "POST create_post" do
       before do
         @new_post = build(:post)
-        post :create_post, topic_id: my_topic.id, post: {title: @new_post.title, body: @new_post.body}
+        post :create_post, id: my_topic.id, post: {title: @new_post.title, body: @new_post.body}
       end
 
       it "returns http success" do
@@ -149,10 +139,10 @@ RSpec.describe Api::V1::TopicsController, type: :controller do
         expect(response.content_type).to eq 'application/json'
       end
 
-      it "creates a post with the correct attributes" do
+      it "creates post with correct attributes" do
         hashed_json = JSON.parse(response.body)
-        expect(hashed_json["title"]).to eq(@new_post.title)
-        expect(hashed_json["body"]).to eq(@new_post.body)
+        expect(@new_post.title).to eq(hashed_json["title"])
+        expect(@new_post.body).to eq(hashed_json["body"])
       end
     end
   end
